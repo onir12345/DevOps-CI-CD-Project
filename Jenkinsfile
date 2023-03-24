@@ -2,9 +2,9 @@ pipeline {
   agent any
 	
   environment {
-    DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
-    REMOTE_SERVER = 'your-remote-server-ip'
-    REMOTE_USER = 'your-remote-server-user' 	  	  
+    DOCKERHUB_CREDENTIALS = credentials('forjenkins')
+    REMOTE_SERVER = '54.158.197.246'
+    REMOTE_USER = 'ubuntu' 	  	  
   }
 	
   // Fetch code from GitHub
@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/palakbhawsar98/JavaWebApp'
+        git branch: 'main', url: 'https://github.com/onir12345/DevOps-CI-CD-Project'
 
       }
     }
@@ -46,8 +46,8 @@ pipeline {
     stage('Build Docker Image') {
 
       steps {
-        sh 'docker build -t javawebapp:latest .'
-        sh 'docker tag javawebapp palakbhawsar/javawebapp:latest'
+        sh 'docker build -t javaautomationfromgithubjenkinsdockeraws:latest .'
+        sh 'docker tag javaautomationfromgithubjenkinsdockeraws shumail12345/javaautomationfromgithubjenkinsdockeraws'
       }
     }
 	  
@@ -63,7 +63,7 @@ pipeline {
 	  
     stage('Push Image to dockerHUb') {
       steps {
-        sh 'docker push palakbhawsar/javawebapp:latest'
+        sh 'docker push shumail12345/javaautomationfromgithubjenkinsdockeraws'
       }
       post {
         always {
@@ -80,8 +80,8 @@ pipeline {
         script {
           sshagent(credentials: ['awscred']) {
           sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker stop javaApp || true && docker rm javaApp || true'"
-	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull palakbhawsar/javawebapp'"
-          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 palakbhawsar/javawebapp'"
+	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull shumail12345/javaautomationfromgithubjenkinsdockeraws'"
+          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 shumail12345/javaautomationfromgithubjenkinsdockeraws'"
           }
         }
       }
